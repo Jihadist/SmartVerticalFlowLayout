@@ -9,16 +9,15 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget* parent = nullptr);
+    ~MainWindow() override;
 
 protected:
-    void resizeEvent(QResizeEvent* event);
+    void resizeEvent(QResizeEvent* event) override;
 
 private slots:
     void on_boxExample_currentIndexChanged(int index);
@@ -41,23 +40,24 @@ private:
     QSizePolicy elementPolicy() const;
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
 
     SmartVerticalFlowLayout* mp_scrollLayout;
 };
 
-
-
 #include <QPushButton>
 
-class DemoWidget : public QPushButton
-{
+class DemoWidget : public QPushButton {
     Q_OBJECT
 public:
-    explicit DemoWidget(QWidget* parent, const QSize& hint) : QPushButton(parent) { trueHintSize = hint; }
-    virtual ~DemoWidget() {}
+    explicit DemoWidget(QWidget* parent, const QSize& hint)
+        : QPushButton(parent)
+    {
+        trueHintSize = hint;
+    }
+    virtual ~DemoWidget() override {}
 
-    QSize sizeHint() const { return trueHintSize; }
+    QSize sizeHint() const override { return trueHintSize; }
 
 private:
     QSize trueHintSize;

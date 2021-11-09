@@ -5,17 +5,14 @@
 #include <QRect>
 #include <QStyle>
 
-
 QT_BEGIN_NAMESPACE
-
 
 /**
  * @brief The SmartVerticalFlowLayout class is a flow layout. It provide also
  * standard alignment on item (Left, Center and Right), and can strecth items
  * on the row, in order to use row width entirely (Justify or 0).
  */
-class Q_WIDGETS_EXPORT SmartVerticalFlowLayout : public QLayout
-{
+class Q_WIDGETS_EXPORT SmartVerticalFlowLayout : public QLayout {
     Q_OBJECT
 
     Q_PROPERTY(int horizontalSpacing READ horizontalSpacing WRITE setHorizontalSpacing)
@@ -24,13 +21,13 @@ class Q_WIDGETS_EXPORT SmartVerticalFlowLayout : public QLayout
     Q_PROPERTY(int maxRowCount READ maxRowCount WRITE setMaxRowCount)
 
 public:
-    explicit SmartVerticalFlowLayout(QWidget *parent = 0);
-    ~SmartVerticalFlowLayout();
+    explicit SmartVerticalFlowLayout(QWidget* parent = nullptr);
+    ~SmartVerticalFlowLayout() override;
 
-    int count() const;
-    void addItem(QLayoutItem *item);
-    QLayoutItem *itemAt(int index) const;
-    QLayoutItem *takeAt(int index);
+    int count() const override;
+    void addItem(QLayoutItem* item) override;
+    QLayoutItem* itemAt(int index) const override;
+    QLayoutItem* takeAt(int index) override;
 
     int horizontalSpacing() const;
     int verticalSpacing() const;
@@ -41,11 +38,11 @@ public:
      * @brief Return with no expanding direction if aligment isn't justify nor 0.
      * @return Qt::Horizontal or 0
      */
-    Qt::Orientations expandingDirections() const;
+    Qt::Orientations expandingDirections() const override;
 
-    QSize sizeHint() const;
-    QSize minimumSize() const;
-    void setGeometry(const QRect &rect);
+    QSize sizeHint() const override;
+    QSize minimumSize() const override;
+    void setGeometry(const QRect& rect) override;
 
 public slots:
     void setHorizontalSpacing(int space);
@@ -68,24 +65,23 @@ public slots:
     void updateLayout();
 
 private:
-    void doLayout(const QRect &rect);
+    void doLayout(const QRect& rect);
     int smartSpacing(QStyle::PixelMetric pm) const;
 
 private:
-    QList<QLayoutItem *> m_items;
+    QList<QLayoutItem*> m_items;
     int m_hSpace;
     int m_vSpace;
 
     int m_maxRowCount;
 
-    QList<QList<QLayoutItem*> > m_structure;
+    QList<QList<QLayoutItem*>> m_structure;
     QRect m_structureGeometry;
     bool m_isLayoutModified;
 
 private:
     Q_DISABLE_COPY(SmartVerticalFlowLayout)
 };
-
 
 QT_END_NAMESPACE
 

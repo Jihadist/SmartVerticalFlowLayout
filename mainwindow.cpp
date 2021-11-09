@@ -1,15 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "smartverticalflowlayout.h"
 #include <QPushButton>
 
-#include "smartverticalflowlayout.h"
-
-
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    mp_scrollLayout(NULL)
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , mp_scrollLayout(nullptr)
 {
     ui->setupUi(this);
 
@@ -24,17 +22,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->boxAlignment->setItemData(3, Qt::AlignRight);
 
     //
-    connect(ui->actionQuit, SIGNAL(triggered()),
-            qApp, SLOT(quit()));
+    connect(ui->actionQuit, &QAction::triggered,
+        qApp, &QCoreApplication::quit);
 
-    connect(ui->slideNumberElements, SIGNAL(valueChanged(int)),
-            this, SLOT(updateNumberOfElement(int)));
-    connect(ui->spinBoxHorizontalMargins, SIGNAL(valueChanged(int)),
-            this, SLOT(updateMargin()));
-    connect(ui->spinBoxVerticalMargins, SIGNAL(valueChanged(int)),
-            this, SLOT(updateMargin()));
-    connect(ui->checkSizePolicy, SIGNAL(toggled(bool)),
-            this, SLOT(updateElementsPolicy()));
+    connect(ui->slideNumberElements, &QAbstractSlider::valueChanged,
+        this, &MainWindow::updateNumberOfElement);
+    connect(ui->spinBoxHorizontalMargins, QOverload<int>::of(&QSpinBox::valueChanged),
+        this, &MainWindow::updateMargin);
+    connect(ui->spinBoxVerticalMargins, QOverload<int>::of(&QSpinBox::valueChanged),
+        this, &MainWindow::updateMargin);
+    connect(ui->checkSizePolicy, &QAbstractButton::toggled,
+        this, &MainWindow::updateElementsPolicy);
 
     //
     updateMargin();
@@ -58,14 +56,14 @@ void MainWindow::updateNumberOfElement(int number)
         mp_scrollLayout->addWidget(createWidget(mp_scrollLayout, ui->scrollableContent));
 
     while (mp_scrollLayout->count() > number) {
-        QLayoutItem* item = mp_scrollLayout->takeAt(mp_scrollLayout->count()-1);
+        QLayoutItem* item = mp_scrollLayout->takeAt(mp_scrollLayout->count() - 1);
         if (item->widget())
             item->widget()->deleteLater();
         delete item;
     }
 }
 
-QWidget* MainWindow::createWidget(SmartVerticalFlowLayout *layout, QWidget *master) const
+QWidget* MainWindow::createWidget(SmartVerticalFlowLayout* layout, QWidget* master) const
 {
     static const QSize unitSize = QSize(60, 35);
 
@@ -103,12 +101,10 @@ QWidget* MainWindow::createWidget(SmartVerticalFlowLayout *layout, QWidget *mast
         else if (modCounter == 12) {
             xFact = 3;
             yFact = 3;
-        }
-        else if (modCounter == 15) {
+        } else if (modCounter == 15) {
             xFact = 2;
             yFact = 3;
-        }
-        else if (modCounter == 18)
+        } else if (modCounter == 18)
             xFact = 3;
         else if (modCounter == 24)
             yFact = 3;
@@ -118,11 +114,13 @@ QWidget* MainWindow::createWidget(SmartVerticalFlowLayout *layout, QWidget *mast
         }
     }
 
-    QSize size = QSize(unitSize.width()*xFact, unitSize.height()*yFact);
+    QSize size = QSize(unitSize.width() * xFact, unitSize.height() * yFact);
 
     QPushButton* button = new DemoWidget(master, size);
     button->setText(QString("#%1 (%2x%3)")
-                    .arg(counter).arg(xFact).arg(yFact));
+                        .arg(counter)
+                        .arg(xFact)
+                        .arg(yFact));
 
     QWidget* widget = button;
     widget->setSizePolicy(elementPolicy());
@@ -135,10 +133,10 @@ QWidget* MainWindow::createWidget(SmartVerticalFlowLayout *layout, QWidget *mast
 void MainWindow::updateMargin()
 {
     mp_scrollLayout->setContentsMargins(
-                ui->spinBoxHorizontalMargins->value(),
-                ui->spinBoxVerticalMargins->value(),
-                ui->spinBoxHorizontalMargins->value(),
-                ui->spinBoxVerticalMargins->value());
+        ui->spinBoxHorizontalMargins->value(),
+        ui->spinBoxVerticalMargins->value(),
+        ui->spinBoxHorizontalMargins->value(),
+        ui->spinBoxVerticalMargins->value());
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
@@ -156,7 +154,7 @@ void MainWindow::on_boxExample_currentIndexChanged(int)
 
 void MainWindow::on_boxAlignment_currentIndexChanged(int index)
 {
-    Qt::Alignment align = (Qt::Alignment)ui->boxAlignment->itemData(index).toInt();
+    Qt::Alignment align = Qt::Alignment(ui->boxAlignment->itemData(index).toInt());
     mp_scrollLayout->setAlignment(align);
 }
 
@@ -180,10 +178,10 @@ QSizePolicy MainWindow::elementPolicy() const
 {
     if (ui->checkSizePolicy->isChecked())
         return QSizePolicy(QSizePolicy::Preferred,
-                           QSizePolicy::Preferred);
+            QSizePolicy::Preferred);
     // or else, return default policy
     return QSizePolicy(QSizePolicy::Minimum,
-                       QSizePolicy::Fixed);
+        QSizePolicy::Fixed);
 }
 
 void MainWindow::on_spinBoxMaxElements_valueChanged(int count)
